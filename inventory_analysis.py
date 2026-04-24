@@ -54,15 +54,12 @@ def find_reorder_items(items):
 
 
 def print_table(rows):
-    headers = ["product_id", "category", "stock_level", "reorder_threshold", "unit_price"]
+    headers = ["product_id", "category"]
     values = [headers]
     for item in rows:
         values.append([
             item["product_id"],
             item["category"],
-            item["stock_display"],
-            item["threshold_display"],
-            item["unit_price"],
         ])
 
     widths = [max(len(str(value[i])) for value in values) for i in range(len(headers))]
