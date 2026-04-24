@@ -30,11 +30,16 @@ def load_inventory(csv_path):
     with csv_path.open(newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
+            stock_raw = str(row.get("stock_level", "")).strip()
+            threshold_raw = str(row.get("reorder_threshold", "")).strip()
             yield {
                 "product_id": row.get("product_id", "").strip(),
                 "category": row.get("category", "").strip(),
-                "stock_level": parse_int(row.get("stock_level")),
-                "reorder_threshold": parse_int(row.get("reorder_threshold")),
+                "stock_level": parse_int(stock_raw),
+                "stock_display": stock_raw or "",
+                "reorder_threshold": parse_int(threshold_raw),
+                "threshold_display": threshold_raw or "",
+                "unit_price": str(row.get("unit_price", "")).strip(),
             }
 
 
@@ -48,6 +53,28 @@ def find_reorder_items(items):
             yield item
 
 
+def print_table(rows):
+    headers = ["product_id", "category", "stock_level", "reorder_threshold", "unit_price"]
+    values = [headers]
+    for item in rows:
+        values.append([
+            item["product_id"],
+            item["category"],
+            item["stock_display"],
+            item["threshold_display"],
+            item["unit_price"],
+        ])
+
+    widths = [max(len(str(value[i])) for value in values) for i in range(len(headers))]
+    header_row = " | ".join(headers[i].ljust(widths[i]) for i in range(len(headers)))
+    separator = "-+-".join("-" * widths[i] for i in range(len(headers)))
+
+    print(header_row)
+    print(separator)
+    for row in values[1:]:
+        print(" | ".join(str(row[i]).ljust(widths[i]) for i in range(len(headers))))
+
+
 def main():
     if not DATA_FILE.exists():
         raise FileNotFoundError(f"Inventory file not found: {DATA_FILE}")
@@ -59,8 +86,7 @@ def main():
         print("No items currently need reordering.")
         return
 
-    for item in reorder_items:
-        print(f"- Product ID: {item['product_id']}, Category: {item['category']}")
+    print_table(reorder_items)
 
 
 if __name__ == "__main__":
