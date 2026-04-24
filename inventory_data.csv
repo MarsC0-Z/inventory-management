@@ -1,0 +1,11 @@
+product_id,category,stock_level,reorder_threshold,unit_price
+P001,Electronics,50,100,299.99
+P002,Home,20,50,49.99
+P003,Apparel,5,20,19.99
+P004,Electronics,150,100,199.99
+P005,Home,30,40,79.99
+P006,Apparel,10,15,29.99
+P007,Electronics,80,90,399.99
+P008,Home,25,30,59.99
+P009,Apparel,2,10,39.99
+P010,Electronics,120,110,249.99
